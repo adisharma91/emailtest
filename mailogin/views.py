@@ -1,7 +1,10 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect
-from .models import MyUser
-from .forms import LoginForm,UserCreationForm
+from django.http import HttpResponse, JsonResponse
+from .models import *
+from .forms import LoginForm,UserCreationForm,ProjectForm
 from django.contrib.auth import authenticate,login, logout
+from django.contrib.auth.decorators import login_required
+from emaillogin import settings
 
 
 # Create your views here.
@@ -60,10 +63,26 @@ def mylogout(request):
 
 
 def index(request):
+    projects = Project.objects.all()
 
-    return render(request,'index.html')
+    if request.method == 'POST':
+        form = ProjectForm(request.POST)
+        if form.is_valid():
+            project = Project.objects.create(by=request.user.first_name,
+                                             name=form.cleaned_data['name'],
+                                             startdate=form.cleaned_data['startdate'],
+                                             endate=form.cleaned_data['endate']
+                                             )
+            project.save()
+
+        return redirect('/')
+    else:
+        form = ProjectForm()
+
+    return render(request,'index.html',{'frm':form, 'projects':projects})
 
 
+@login_required(login_url=settings.LOGIN_URL)
 def profile(request,id):
     if request.method == 'POST':
         user = MyUser.objects.get(id=id)
@@ -76,3 +95,19 @@ def profile(request,id):
         return redirect('/')
     else:
         return render(request, 'profile.html')
+
+
+def apply(request,id):
+    if request.method == 'POST':
+        applied = Applied.objects.create(projectid_id=id,
+                                         userid_id=request.user.id
+                                         )
+        applied.save()
+
+        return JsonResponse({"status": True})
+    else:
+        return JsonResponse({"status": False})
+
+
+
+

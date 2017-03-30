@@ -66,3 +66,17 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     @property
     def is_staff(self):
         return self.is_admin
+
+
+class Project(models.Model):
+    name = models.CharField(max_length=200, null=True, blank=True)
+    startdate = models.DateField(null=True, blank=True)
+    endate = models.DateField(null=True, blank=True)
+    addedon = models.DateTimeField(auto_now_add=True)
+    by = models.CharField(max_length=200, null=True, blank=True)
+
+
+class Applied(models.Model):
+    projectid = models.ForeignKey(Project, on_delete=models.CASCADE)
+    userid = models.ForeignKey(MyUser, on_delete=models.CASCADE)
+    addedon = models.DateTimeField(auto_now_add=True)

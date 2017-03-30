@@ -1,5 +1,5 @@
 from django import forms
-from .models import MyUser
+from .models import MyUser,Project
 
 
 class UserCreationForm(forms.ModelForm):
@@ -76,3 +76,19 @@ class LoginForm(forms.Form):
         super(LoginForm, self).__init__(*args, **kwargs)
         self.fields['email'].label = False
         self.fields['password'].label = False
+
+
+class ProjectForm(forms.ModelForm):
+
+    class Meta:
+        model = Project
+        fields = '__all__'
+
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'form-control','placeholder':'Project Name'}),
+            'startdate': forms.DateInput(attrs={'class': 'form-control datepicker','placeholder':'Start Date'}),
+            'endate': forms.DateInput(attrs={'class': 'form-control datepicker','placeholder':'End Date'})
+        }
+
+
+
