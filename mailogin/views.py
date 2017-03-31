@@ -63,7 +63,19 @@ def mylogout(request):
 
 
 def index(request):
-    projects = Project.objects.all()
+    applied = Applied.objects.filter(userid_id=request.user.id)
+
+    j = []
+    if applied:
+        for job in applied:
+            jb = job.projectid_id
+            j.append(jb)
+
+        projects = Project.objects.all().exclude(id__in=j).order_by('-id')
+        apld = Project.objects.filter(id__in=j)
+    else:
+        apld = ''
+        projects = Project.objects.all()
 
     if request.method == 'POST':
         form = ProjectForm(request.POST)
@@ -75,11 +87,11 @@ def index(request):
                                              )
             project.save()
 
-        return redirect('/')
+        return HttpResponseRedirect('/')
     else:
         form = ProjectForm()
 
-    return render(request,'index.html',{'frm':form, 'projects':projects})
+    return render(request,'index.html',{'frm':form, 'projects':projects, 'apld':apld})
 
 
 @login_required(login_url=settings.LOGIN_URL)

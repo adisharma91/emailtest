@@ -7,6 +7,9 @@ $(document).ready(function(){
             if(response.status == true){
                 thisbtn.html('Applied').attr('disabled','true');
             }
+            else{
+                thisbtn.html('Error').attr('disabled','true');
+            }
         })
     })
 })
