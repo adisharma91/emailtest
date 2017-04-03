@@ -1,5 +1,6 @@
 from django import forms
 from .models import MyUser,Project
+from django.forms import ValidationError
 
 
 class UserCreationForm(forms.ModelForm):
@@ -90,5 +91,24 @@ class ProjectForm(forms.ModelForm):
             'endate': forms.DateInput(attrs={'class': 'form-control datepicker','placeholder':'End Date'})
         }
 
+
+class ImageForm(forms.ModelForm):
+    class Meta:
+        model = MyUser
+        fields = ['propic',]
+
+        widgets = {
+            'propic': forms.FileInput()
+        }
+
+    def clean_photo(self):
+        image = self.cleaned_data.get('propic', False)
+
+        if image:
+            if image._size > 1 * 1024:
+                raise ValidationError("Image file too large ( maximum 1mb )")
+            return image
+        else:
+            raise ValidationError("Couldn't read uploaded image")
 
 

@@ -1,7 +1,7 @@
 from django.shortcuts import render, HttpResponseRedirect, redirect
 from django.http import HttpResponse, JsonResponse
 from .models import *
-from .forms import LoginForm,UserCreationForm,ProjectForm
+from .forms import *
 from django.contrib.auth import authenticate,login, logout
 from django.contrib.auth.decorators import login_required
 from emaillogin import settings
@@ -104,7 +104,7 @@ def profile(request,id):
         user.address = request.POST.get('address')
         user.save()
 
-        return redirect('/')
+        return HttpResponseRedirect('/')
     else:
         return render(request, 'profile.html')
 
@@ -120,6 +120,36 @@ def apply(request,id):
     else:
         return JsonResponse({"status": False})
 
+
+@login_required(login_url=settings.LOGIN_URL)
+def details(request):
+    try:
+        usr = MyUser.objects.get(id=request.user.id)
+    except MyUser.DoesNotExist:
+        usr = None
+
+    return render(request, 'profiledetails.html',{'usr':usr})
+
+
+def imgupload(request):
+    try:
+        usr = MyUser.objects.get(id=request.user.id)
+    except MyUser.DoesNotExist:
+        usr = None
+
+    if request.method == 'POST':
+        form = ImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            usr.propic = request.FILES['propic']
+            usr.save()
+
+            return redirect('/details/')
+        else:
+            return redirect('/')
+    else:
+        form = ImageForm()
+
+        return render(request, 'imageupload.html', {'form': form})
 
 
 

@@ -43,6 +43,7 @@ class MyUser(AbstractBaseUser, PermissionsMixin):
     first_name = models.CharField(max_length=200, blank=True, null=True)
     last_name = models.CharField(max_length=200, blank=True, null=True)
     occupation = models.CharField(max_length=200, blank=True, null=True)
+    propic = models.ImageField(upload_to='profilepic', null=True)
     address = models.CharField(max_length=200, blank=True, null=True)
     date_joined = models.DateTimeField(auto_now_add=True)
 

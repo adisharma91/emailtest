@@ -12,4 +12,15 @@ $(document).ready(function(){
             }
         })
     })
+
+    $('.imgbutton').click(function(e){
+        $.get('/imgupload/',function(response){
+            if(response != null){
+                $('#lightbox_content').empty();
+                $('#lightbox_content').html(response);
+                $('#lightbox').css('display','inline');
+            }
+        })
+    })
+
 })
