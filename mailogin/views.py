@@ -145,7 +145,7 @@ def imgupload(request):
 
             return redirect('/details/')
         else:
-            return redirect('/')
+            return redirect('/details/')
     else:
         form = ImageForm()
 

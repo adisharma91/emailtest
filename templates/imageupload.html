@@ -1,4 +1,4 @@
-<div class="close lightbox_close">x</div>
+<div><span class="close lightbox_close" onclick="closeModal()">&times;</span></div>
 <div class="lightbox_content">
 
 <h3 class="text-center">Upload your recent photo</h3>
@@ -6,8 +6,13 @@
     <div style="margin-top:30px;" class="col-md-12">
         <form id="imgform" method="post" action="/imgupload/" enctype="multipart/form-data">
             {% csrf_token %}
-            {{form.propic}}
-            <button class="btn btn-primary" type="submit">Save</button>
+            {{form.errors}}
+
+            <input id="id_propic" name="propic" class="demoInputBox" type="file">
+            <div id="errmsg" style="display: none;">
+                <p style="margin-bottom: 0px !important;color: red;">Image exceeds the maximum size(50Kb) <br> Please upload less than 50kb Image</p>
+            </div>
+            <div style="margin-top: 6px;"><button id="imbtn" disabled="" class="btn btn-primary" style="width: 120px;" type="submit">Save</button></div>
 
         </form>
     </div>
@@ -15,3 +20,21 @@
 </div>
 
 <script src="/static/js/my.js"></script>
+<script type="text/javascript">
+    $(function () {
+        $("#id_propic").on('change', function () {
+            if (typeof ($("#id_propic")[0].files) != "undefined") {
+                var size = parseFloat($("#id_propic")[0].files[0].size / 1024).toFixed(2);
+                if(size > 50){
+                    $('#errmsg').show();
+                }
+                else{
+                    $('#imbtn').removeAttr('disabled');
+                    $('#errmsg').hide();
+                }
+            } else {
+                alert("This browser does not support HTML5.");
+            }
+        });
+    });
+</script>

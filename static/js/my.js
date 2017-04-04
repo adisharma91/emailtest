@@ -24,3 +24,7 @@ $(document).ready(function(){
     })
 
 })
+
+function closeModal() {
+  document.getElementById('lightbox').style.display = "none";
+}
