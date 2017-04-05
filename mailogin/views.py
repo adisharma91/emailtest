@@ -137,13 +137,18 @@ def imgupload(request):
     except MyUser.DoesNotExist:
         usr = None
 
+    maxsize = 50 * 1024
+
     if request.method == 'POST':
         form = ImageForm(request.POST, request.FILES)
         if form.is_valid():
             usr.propic = request.FILES['propic']
-            usr.save()
-
-            return redirect('/details/')
+            pic = usr.propic
+            if pic.file.size > maxsize :
+                return redirect('/')
+            else:
+                usr.save()
+                return redirect('/details/')
         else:
             return redirect('/details/')
     else:

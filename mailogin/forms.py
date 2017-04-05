@@ -104,11 +104,11 @@ class ImageForm(forms.ModelForm):
     def clean_photo(self):
         image = self.cleaned_data.get('propic', False)
 
+        maxsize = 50 * 1024
+
         if image:
-            if image._size > 1 * 1024:
+            if image.file.size > maxsize:
                 raise ValidationError("Image file too large ( maximum 1mb )")
             return image
         else:
             raise ValidationError("Couldn't read uploaded image")
-
-
